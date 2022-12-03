@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { lazy, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getPosts, getUser, updateNickname } from '../mocks/api';
+
+const Post = lazy(() => import('./Post'));
 
 export default function Edit() {
   const [inputValue, setInputValue] = useState('');
@@ -33,6 +35,11 @@ export default function Edit() {
           변경할 닉네임:
           <input type="text" value={inputValue} onChange={handleChange} />
         </label>
+        <ul>
+          {posts.map(({ title }) => (
+            <Post title={title} />
+          ))}
+        </ul>
       </form>
 
       <ul>{posts}</ul>
