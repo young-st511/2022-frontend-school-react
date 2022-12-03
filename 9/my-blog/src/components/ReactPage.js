@@ -1,9 +1,27 @@
-import { React, useEffect, useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { React, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import useSWR from "swr";
 
-export default function ReactPage() {
+const ReactPage = () => {
   // api call -> react에 해당하는 글의 목록을 응답 받음.
-  const [docs, setDocs] = useState([]);
+  const [number, setNumber] = useState(0);
+
+  console.log("I'm back!!");
+
+  async function fetcher() {
+    const result = await axios.get(
+      "https://jsonplaceholder.typicode.com/posts"
+    );
+
+    console.log(result.data);
+    return result.data;
+  }
+
+  const { data: docs, error } = useSWR("posts", fetcher);
+
+  // const { data: docs, error } = useSWR('posts', fetcher);
+
   // const docs = [
   //   {
   //     id: 1,
@@ -32,31 +50,38 @@ export default function ReactPage() {
   //   },
   // ];
 
-  useEffect(() => {
-    async function fetchData() {
-      const res = await fetch('https://jsonplaceholder.typicode.com/posts');
-      console.log(res);
-      const result = await res.json();
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const result = await axios.get(
+  //       "https://jsonplaceholder.typicode.com/posts"
+  //     );
+  //     console.log(result);
+  //     console.log(result.data);
+  //     return result.data;
+  //   }
 
-      return result;
-    }
+  //   fetchData().then((res) => {
+  //     setDocs(res);
+  //   });
+  // }, []);
 
-    fetchData().then((res) => {
-      setDocs(res);
-    });
-  }, []);
+  if (error) return <div>Failed to load</div>;
+  if (!docs) return <div>Loading...</div>;
 
   return (
     <div>
+      <button onClick={() => setNumber(number + 1)}>{number}</button>
       {docs.map((doc) => (
         <Link
           to={`${doc.id}`}
           key={doc.id}
-          style={{ display: 'block', margin: '1rem 0' }}>
+          style={{ display: "block", margin: "1rem 0" }}>
           {doc.title}
         </Link>
       ))}
       {/* <Outlet /> */}
     </div>
   );
-}
+};
+
+export default ReactPage;

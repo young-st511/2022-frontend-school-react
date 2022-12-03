@@ -1,4 +1,3 @@
-import axios from "axios";
 import {React, useEffect, useState} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -19,7 +18,7 @@ export default function ReactDocPage() {
     fetchData().then((res) => {
       setDoc(res);
     });
-  }, []);
+  }, [params.docId]);
 
   const navigate = useNavigate();
 
